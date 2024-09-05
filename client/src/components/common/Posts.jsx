@@ -8,8 +8,8 @@ const Posts = ({ feedType }) => {
   // const isLoading = false;
 
   const getPostEndpoint = () => {
-    switch ("feedType") {
-      case "for-you":
+    switch (feedType) {
+      case "forYou":
         return "http://localhost:8000/api/posts/all";
       case "following":
         return "http://localhost:8000/api/posts/following";
@@ -26,10 +26,16 @@ const Posts = ({ feedType }) => {
     refetch,
     isRefetching,
   } = useQuery({
-    queryKey: ["posts"],
+    queryKey: ["posts", feedType],
     queryFn: async () => {
       try {
-        const res = await fetch(POST_ENDPOINT);
+        const res = await fetch(POST_ENDPOINT, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Include credentials to send cookies
+        });
         const data = await res.json();
 
         if (!res.ok) {
@@ -39,6 +45,7 @@ const Posts = ({ feedType }) => {
         return data;
       } catch (error) {
         console.log(error);
+        return []; // Return an empty array on error to avoid returning undefined
       }
     },
   });
