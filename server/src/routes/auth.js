@@ -96,9 +96,11 @@ router.post("/login", async (req, res) => {
 });
 router.post("/logout", async (req, res) => {
   try {
-    // res.clearCookie("token");
-    res.cookie("token", "", { maxAge: 0 });
+    // res.cookie("token", "", { maxAge: 0 });
 
+    // res.status(200).json({ message: "Logged out" });
+
+    res.cookie("token", "", { maxAge: 0, httpOnly: true });
     res.status(200).json({ message: "Logged out" });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });

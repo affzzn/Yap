@@ -7,7 +7,7 @@ import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
 import { Toaster } from "react-hot-toast";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 
@@ -48,20 +48,51 @@ function App() {
       </div>
     );
   }
+
   return (
     <div className="flex max-w-6xl mx-auto">
-      <Sidebar />
+      {/* Common component, bc it's not wrapped with Routes */}
+      {authUser && <Sidebar />}
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/notifications" element={<NotificationPage />} />
-        <Route path="/profile/:username" element={<ProfilePage />} />
+        <Route
+          path="/"
+          element={authUser ? <HomePage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/login"
+          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/signup"
+          element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/notifications"
+          element={authUser ? <NotificationPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/profile/:username"
+          element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
       </Routes>
-      <RightPanel />
+      {authUser && <RightPanel />}
       <Toaster />
     </div>
   );
+  // return (
+  //   <div className="flex max-w-6xl mx-auto">
+  //     <Sidebar />
+  //     <Routes>
+  //       <Route path="/" element={<HomePage />} />
+  //       <Route path="/login" element={<LoginPage />} />
+  //       <Route path="/signup" element={<SignUpPage />} />
+  //       <Route path="/notifications" element={<NotificationPage />} />
+  //       <Route path="/profile/:username" element={<ProfilePage />} />
+  //     </Routes>
+  //     <RightPanel />
+  //     <Toaster />
+  //   </div>
+  // );
 }
 
 export default App;
