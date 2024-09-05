@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import RightPanelSkeleton from "../skeletons/RightPanelSkeleton";
-import { USERS_FOR_RIGHT_PANEL } from "../../uitls/db/dummy";
 import { useQuery } from "@tanstack/react-query";
 import useFollow from "../../hooks/useFollow";
 
@@ -45,7 +44,8 @@ const RightPanel = () => {
           {!isLoading &&
             suggestedUsers?.map((user) => (
               <Link
-                to={`/profile/${user.username}`}
+                // to={`/profile/${user.username}`}
+                to={"/"}
                 className="flex items-center justify-between gap-4"
                 key={user._id}
               >

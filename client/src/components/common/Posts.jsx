@@ -1,10 +1,9 @@
 import Post from "./Post";
 import PostSkeleton from "../skeletons/PostSkeleton";
-import { POSTS } from "../../uitls/db/dummy";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-const Posts = ({ feedType }) => {
+const Posts = ({ feedType, username, userId }) => {
   // const isLoading = false;
 
   const getPostEndpoint = () => {
@@ -13,6 +12,10 @@ const Posts = ({ feedType }) => {
         return "http://localhost:8000/api/posts/all";
       case "following":
         return "http://localhost:8000/api/posts/following";
+      case "posts":
+        return `http://localhost:8000/api/posts/user/${username}`;
+      case "likes":
+        return `http://localhost:8000/api/posts/${userId}`;
       default:
         return "http://localhost:8000/api/posts/all";
     }

@@ -51,7 +51,6 @@ function App() {
 
   return (
     <div className="flex max-w-6xl mx-auto">
-      {/* Common component, bc it's not wrapped with Routes */}
       {authUser && <Sidebar />}
       <Routes>
         <Route
@@ -70,29 +69,15 @@ function App() {
           path="/notifications"
           element={authUser ? <NotificationPage /> : <Navigate to="/login" />}
         />
-        <Route
+        {/* <Route
           path="/profile/:username"
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
-        />
+        /> */}
       </Routes>
       {authUser && <RightPanel />}
       <Toaster />
     </div>
   );
-  // return (
-  //   <div className="flex max-w-6xl mx-auto">
-  //     <Sidebar />
-  //     <Routes>
-  //       <Route path="/" element={<HomePage />} />
-  //       <Route path="/login" element={<LoginPage />} />
-  //       <Route path="/signup" element={<SignUpPage />} />
-  //       <Route path="/notifications" element={<NotificationPage />} />
-  //       <Route path="/profile/:username" element={<ProfilePage />} />
-  //     </Routes>
-  //     <RightPanel />
-  //     <Toaster />
-  //   </div>
-  // );
 }
 
 export default App;
