@@ -75,6 +75,37 @@ const Post = ({ post }) => {
     },
   });
 
+  const { mutate: commentPost, isPending: isCommenting } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8000/api/posts/comment/${post._id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({ text: comment }),
+          }
+        );
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Something went wrong");
+        }
+
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      setComment("");
+    },
+  });
+
   const [comment, setComment] = useState("");
 
   const postOwner = post.user;
@@ -82,9 +113,7 @@ const Post = ({ post }) => {
 
   const isMyPost = authUser._id === post.user._id;
 
-  const formattedDate = "1h";
-
-  const isCommenting = false;
+  // const isCommenting = false;
 
   const handleDeletePost = () => {
     deletePost();
@@ -92,6 +121,8 @@ const Post = ({ post }) => {
 
   const handlePostComment = (e) => {
     e.preventDefault();
+    if (isCommenting) return;
+    commentPost();
   };
 
   const handleLikePost = () => {
@@ -119,8 +150,6 @@ const Post = ({ post }) => {
               <Link to={`/profile/${postOwner.username}`}>
                 @{postOwner.username}
               </Link>
-              <span>·</span>
-              <span>{formattedDate}</span>
             </span>
             {isMyPost && (
               <span className="flex justify-end flex-1">
@@ -161,7 +190,7 @@ const Post = ({ post }) => {
                   {post.comments.length}
                 </span>
               </div>
-              {/* We're using Modal Component from DaisyUI */}
+              {/* Modal Component from DaisyUI */}
               <dialog
                 id={`comments_modal${post._id}`}
                 className="modal border-none outline-none"
@@ -170,9 +199,7 @@ const Post = ({ post }) => {
                   <h3 className="font-bold text-lg mb-4">COMMENTS</h3>
                   <div className="flex flex-col gap-3 max-h-60 overflow-auto">
                     {post.comments.length === 0 && (
-                      <p className="text-sm text-slate-500">
-                        No comments yet 🤔 Be the first one 😉
-                      </p>
+                      <p className="text-sm text-slate-500">No comments yet</p>
                     )}
                     {post.comments.map((comment) => (
                       <div key={comment._id} className="flex gap-2 items-start">
